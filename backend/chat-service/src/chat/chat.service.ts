@@ -107,13 +107,10 @@ export class ChatService {
       .take(limit);
 
     if (before) {
-      const cursor = await this.messageRepository.findOne({ where: { id: before } });
-      if (cursor) {
-        qb.andWhere('message.createdAt < :createdAt', { createdAt: cursor.createdAt });
-      }
+      queryBuilder.andWhere('message.createdAt < :createdAt', { createdAt: before });
     }
 
-    const messages = await qb.getMany();
+    const messages = await queryBuilder.getMany();
     return messages.reverse(); // Return in chronological order
   }
 }

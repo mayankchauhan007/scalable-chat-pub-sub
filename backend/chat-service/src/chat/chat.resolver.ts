@@ -40,7 +40,7 @@ export class ChatResolver {
   messages(
     @Args('chatId') chatId: string,
     @Args('limit', { type: () => Int, defaultValue: 50 }) limit: number,
-    @Args('before', { nullable: true }) before?: string,
+    @Args('before', { nullable: true }) before?: Date,
   ) {
     return this.chatService.getMessages(chatId, limit, before);
   }
