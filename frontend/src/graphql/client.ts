@@ -30,6 +30,19 @@ const chatWsLink = new GraphQLWsLink(
     url: `${CHAT_WS_URL}/graphql`,
     connectionParams: {},
     shouldRetry: () => true,
+    on: {
+      connected: (socket) => console.log('[WS] Connected to chat service', socket),
+      error: (err) => console.error('[WS] Connection error:', err),
+      closed: (event) => console.log('[WS] Connection closed', event),
+      ping: (received) => console.log('[WS] Ping', received),
+      pong: (received) => console.log('[WS] Pong', received),
+      message: (message) => console.log('[WS] Raw message received:', message),
+    },
+    retryAttempts: Infinity,
+    retryWait: async (retries) => {
+      console.log(`[WS] Retry attempt ${retries}`);
+      await new Promise(resolve => setTimeout(resolve, Math.min(1000 * Math.pow(2, retries), 10000)));
+    },
   }),
 );
 

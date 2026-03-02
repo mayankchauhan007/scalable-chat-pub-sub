@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ChatModule } from './chat/chat.module';
+import { DateTimeScalar } from './common/scalars/date.scalar';
 
 @Module({
   imports: [
@@ -14,7 +15,21 @@ import { ChatModule } from './chat/chat.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       subscriptions: {
-        'graphql-ws': true,
+        'graphql-ws': {
+          onConnect: (context: any) => {
+            console.log('[GraphQL-WS] Client connected', context.connectionParams);
+            return {};
+          },
+          onDisconnect: () => {
+            console.log('[GraphQL-WS] Client disconnected');
+          },
+        },
+      },
+      context: ({ req, connection }) => {
+        if (connection) {
+          return connection.context;
+        }
+        return { req };
       },
     }),
     // AI-generated: environment-variable-driven DB config for Docker portability
@@ -31,6 +46,6 @@ import { ChatModule } from './chat/chat.module';
     ChatModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, DateTimeScalar],
 })
 export class AppModule {}

@@ -61,16 +61,29 @@ function ChatRoom({ currentUser, chatId, chatName }: ChatRoomProps) {
 
   // AI-generated: Subscribe to new messages via GraphQL subscription (WebSocket).
   // The subscription is filtered server-side by chatId.
-  useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
+  const { error: subError } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { chatId },
     onData: ({ data }) => {
+      console.log('[Subscription] Received data:', data.data);
       const newMsg = data.data?.messageSent;
       if (newMsg && !seenIdsRef.current.has(newMsg.id)) {
         seenIdsRef.current.add(newMsg.id);
         setMessages((prev) => [...prev, newMsg]);
       }
     },
+    onError: (error) => {
+      console.error('[Subscription] Error:', error);
+    },
+    onComplete: () => {
+      console.log('[Subscription] Completed');
+    },
   });
+
+  useEffect(() => {
+    if (subError) {
+      console.error('[Subscription] Hook error:', subError);
+    }
+  }, [subError]);
 
   // Auto-scroll to bottom
   useEffect(() => {

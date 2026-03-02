@@ -15,9 +15,23 @@ export const PubSubProvider: Provider = {
     const redisHost = process.env.REDIS_HOST || 'localhost';
     const redisPort = parseInt(process.env.REDIS_PORT || '6379', 10);
 
+    console.log(`[PubSub] Connecting to Redis at ${redisHost}:${redisPort}`);
+
+    const publisher = new Redis({ host: redisHost, port: redisPort });
+    const subscriber = new Redis({ host: redisHost, port: redisPort });
+
+    publisher.on('connect', () => console.log('[PubSub] Publisher connected to Redis'));
+    publisher.on('error', (err) => console.error('[PubSub] Publisher error:', err));
+    
+    subscriber.on('connect', () => console.log('[PubSub] Subscriber connected to Redis'));
+    subscriber.on('error', (err) => console.error('[PubSub] Subscriber error:', err));
+    subscriber.on('message', (channel, message) => {
+      console.log('[PubSub] Received on channel:', channel, 'Message length:', message.length);
+    });
+
     return new RedisPubSub({
-      publisher: new Redis({ host: redisHost, port: redisPort }),
-      subscriber: new Redis({ host: redisHost, port: redisPort }),
+      publisher,
+      subscriber,
     });
   },
 };

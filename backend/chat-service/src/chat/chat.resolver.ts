@@ -62,7 +62,9 @@ export class ChatResolver {
   @Mutation(() => Message)
   async sendMessage(@Args('input') input: SendMessageInput) {
     const message = await this.chatService.sendMessage(input);
+    console.log('[PubSub] Publishing message:', { chatId: message.chatId, messageId: message.id });
     await this.pubSub.publish(MESSAGE_SENT, { messageSent: message });
+    console.log('[PubSub] Message published successfully');
     return message;
   }
 
@@ -71,10 +73,18 @@ export class ChatResolver {
   // AI-generated: subscription filtered by chatId so clients only receive
   // messages for the chat they are viewing
   @Subscription(() => Message, {
-    filter: (payload, variables) =>
-      payload.messageSent.chatId === variables.chatId,
+    filter: (payload, variables) => {
+      const matches = payload.messageSent.chatId === variables.chatId;
+      console.log('[Subscription] Filter check:', { 
+        payloadChatId: payload.messageSent.chatId, 
+        variablesChatId: variables.chatId, 
+        matches 
+      });
+      return matches;
+    },
   })
   messageSent(@Args('chatId') chatId: string) {
+    console.log('[Subscription] Client subscribed to chatId:', chatId);
     return this.pubSub.asyncIterator(MESSAGE_SENT);
   }
 }
