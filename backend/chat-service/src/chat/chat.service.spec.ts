@@ -6,9 +6,6 @@ import { ChatMember } from './entities/chat-member.entity';
 import { Message } from './entities/message.entity';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
-// AI-generated: Unit tests for ChatService using mocked TypeORM repositories.
-// Tests verify business logic (membership checks, message ordering) without a real DB.
-
 const mockChatRepo = () => ({
   create: jest.fn(),
   save: jest.fn(),

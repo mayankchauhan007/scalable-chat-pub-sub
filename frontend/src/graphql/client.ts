@@ -46,7 +46,6 @@ const chatWsLink = new GraphQLWsLink(
   }),
 );
 
-// AI-generated: split link directs subscriptions to WebSocket, queries/mutations to HTTP
 const chatSplitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);

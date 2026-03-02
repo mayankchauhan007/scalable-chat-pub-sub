@@ -10,7 +10,6 @@ import { DateTimeScalar } from './common/scalars/date.scalar';
 
 @Module({
   imports: [
-    // AI-generated: GraphQL config with WebSocket subscriptions enabled via graphql-ws
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
@@ -32,7 +31,6 @@ import { DateTimeScalar } from './common/scalars/date.scalar';
         return { req };
       },
     }),
-    // AI-generated: environment-variable-driven DB config for Docker portability
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST || 'localhost',

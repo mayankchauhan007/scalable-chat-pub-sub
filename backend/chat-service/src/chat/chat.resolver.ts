@@ -15,8 +15,8 @@ const MESSAGE_SENT = 'messageSent';
 @Resolver()
 export class ChatResolver {
   constructor(
-    private chatService: ChatService,
-    @Inject(PUB_SUB) private pubSub: RedisPubSub,
+    private readonly chatService: ChatService,
+    @Inject(PUB_SUB) private readonly pubSub: RedisPubSub,
   ) {}
 
   // --- Queries ---
@@ -57,8 +57,6 @@ export class ChatResolver {
     return this.chatService.joinChat(input);
   }
 
-  // AI-generated: sendMessage publishes to Redis PubSub so all service instances
-  // can deliver the new message to their WebSocket subscribers
   @Mutation(() => Message)
   async sendMessage(@Args('input') input: SendMessageInput) {
     const message = await this.chatService.sendMessage(input);
@@ -70,8 +68,6 @@ export class ChatResolver {
 
   // --- Subscriptions ---
 
-  // AI-generated: subscription filtered by chatId so clients only receive
-  // messages for the chat they are viewing
   @Subscription(() => Message, {
     filter: (payload, variables) => {
       const matches = payload.messageSent.chatId === variables.chatId;

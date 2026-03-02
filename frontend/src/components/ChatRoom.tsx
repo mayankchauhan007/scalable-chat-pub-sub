@@ -19,11 +19,6 @@ interface MessageType {
   createdAt: string;
 }
 
-// AI-generated: ChatRoom component with real-time subscription.
-// useSubscription hooks into the messageSent GraphQL subscription filtered by chatId.
-// New messages from the subscription are appended to the local messages array,
-// with deduplication by message ID to handle race conditions between the mutation
-// response and the subscription event.
 function ChatRoom({ currentUser, chatId, chatName }: ChatRoomProps) {
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [messageText, setMessageText] = useState('');
@@ -59,8 +54,6 @@ function ChatRoom({ currentUser, chatId, chatName }: ChatRoomProps) {
     seenIdsRef.current = new Set();
   }, [chatId]);
 
-  // AI-generated: Subscribe to new messages via GraphQL subscription (WebSocket).
-  // The subscription is filtered server-side by chatId.
   const { error: subError } = useSubscription(MESSAGE_SENT_SUBSCRIPTION, {
     variables: { chatId },
     onData: ({ data }) => {

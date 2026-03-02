@@ -99,10 +99,8 @@ export class ChatService {
       .getMany();
   }
 
-  // AI-generated: cursor-based pagination for message history, ordered by createdAt
-  // to guarantee consistent ordering across instances
-  async getMessages(chatId: string, limit = 50, before?: string): Promise<Message[]> {
-    const qb = this.messageRepository
+  async getMessages(chatId: string, limit = 50, before?: Date): Promise<Message[]> {
+    const queryBuilder = this.messageRepository
       .createQueryBuilder('message')
       .where('message.chatId = :chatId', { chatId })
       .orderBy('message.createdAt', 'DESC')

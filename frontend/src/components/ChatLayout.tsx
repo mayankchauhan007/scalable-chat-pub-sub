@@ -7,8 +7,6 @@ interface ChatLayoutProps {
   currentUser: CurrentUser;
 }
 
-// AI-generated: Main layout with sidebar (chat list) and main area (chat room).
-// Uses a simple state to track which chat is selected.
 function ChatLayout({ currentUser }: ChatLayoutProps) {
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [selectedChatName, setSelectedChatName] = useState<string>('');
