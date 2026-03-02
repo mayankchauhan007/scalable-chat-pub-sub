@@ -108,3 +108,5 @@ The following components were generated with AI assistance:
   - Message sending and history retrieval
 
 ### Unit tests
+
+### And Readme file rephrasing 😅
